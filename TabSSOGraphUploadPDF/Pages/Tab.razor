@@ -1,0 +1,17 @@
+﻿@page "/"
+@page "/tab"
+@using TabSSOGraphUploadPDF.Components;
+
+<div>
+  <div class='dropZoneBG'>
+    Drag your file here:
+    <div class="dropZone" ondragenter=""
+                              ondragleave=""
+         ondragover="TabPDF.allowDrop(event)"
+         ondrop="TabPDF.executeUpload(event)">
+    </div>
+  </div>
+</div>
+
+
+
