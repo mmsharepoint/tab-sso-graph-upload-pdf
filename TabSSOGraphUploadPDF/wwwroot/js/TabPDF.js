@@ -37,28 +37,33 @@
     const dt = event.dataTransfer;
     const files = Array.prototype.slice.call(dt.files); // [...dt.files];
     files.forEach(fileToUpload => {
+      const extensions = fileToUpload.name.split('.');
+      const fileExtension = extensions[extensions.length - 1];
       TabPDF.Drag.disableHighlight(event);
-      //if (Utilities.validFileExtension(fileToUpload.name)) {
-      const formData = new FormData();
-      formData.append('file', fileToUpload);
-      formData.append('Name', fileToUpload.name);
-      formData.append('SiteUrl', TabPDF.siteUrl);
-     
-      fetch("/api/Upload", {
-        method: "post",
-        headers: {
-          "Authorization": "Bearer " + TabPDF.ssoToken,
-          // "Content-Type": "multipart/form-data; boundary=--WebKitFormBoundaryfgtsKTYLsT7PNUVD"
-        },
-        body: formData
-      })
-      .then((response) => {
-        response.text().then(resp => {
-          console.log(resp);
-          TabPDF.addConvertedFile(resp);          
-        });
-      });
-      //}
+      if (TabPDF.Utilities.isFileTypeSupported(fileExtension, 'PDF')) {
+        const formData = new FormData();
+        formData.append('file', fileToUpload);
+        formData.append('Name', fileToUpload.name);
+        formData.append('SiteUrl', TabPDF.siteUrl);
+
+        fetch("/api/Upload", {
+          method: "post",
+          headers: {
+            "Authorization": "Bearer " + TabPDF.ssoToken,
+            // "Content-Type": "multipart/form-data; boundary=--WebKitFormBoundaryfgtsKTYLsT7PNUVD"
+          },
+          body: formData
+        })
+          .then((response) => {
+            response.text().then(resp => {
+              console.log(resp);
+              TabPDF.addConvertedFile(resp);
+            });
+          });
+      }
+      else {
+        alert('File type not supported!')
+      }
     });
   }
 
@@ -68,7 +73,7 @@
     fileLineDIV.innerHTML = '<span>File uploaded to target and available <a href=' + fileUrl + '> here.</a ></span > ';
     parentDIV[0].appendChild(fileLineDIV);
   }
-  /// Class 'user' for TabPDF
+  /// Class 'Drag' for TabPDF
   TabPDF.Drag = {};
   {
     TabPDF.Drag.allowDrop = function (event) {
@@ -87,6 +92,22 @@
       TabPDF.Drag.allowDrop(event);
       const bgDIV = document.getElementsByClassName('dropZone');
       bgDIV[0].classList.remove('dropZoneHighlight');
+    }
+  }
+
+  TabPDF.Utilities = {};
+  {
+    const supportedFileTypes = {
+      PDF: ['csv', 'doc', 'docx', 'odp', 'ods', 'odt', 'pot', 'potm', 'potx', 'pps', 'ppsx', 'ppsxm', 'ppt', 'pptm', 'pptx', 'rtf', 'xls', 'xlsx']
+    };
+
+    TabPDF.Utilities.isFileTypeSupported = function (srcType, trgType) {
+      if (supportedFileTypes[trgType.toUpperCase()].indexOf(srcType.toLowerCase()) > -1) {
+        return true;
+      }
+      else {
+        return false;
+      }
     }
   }
 }(window.TabPDF = window.TabPDF || {}));
