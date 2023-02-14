@@ -49,23 +49,17 @@
       formData.append('file', fileToUpload);
       formData.append('Name', fileToUpload.name);
       formData.append('SiteUrl', TabPDF.siteUrl);
-      //const item = {
-      //  Name: fileToUpload.name,
-      //  SiteUrl: TabPDF.siteUrl
-      //};
+     
       fetch("/api/Upload", {
         method: "post",
         headers: {
-          "Authorization": "Bearer " + TabPDF.ssoToken
-          //"Content-Type": "multipart/form-data; boundary=--WebKitFormBoundaryfgtsKTYLsT7PNUVD",
-          // "Content-Type": "x-www-form-urlencoded"
-          // "Content-Type": "application/json"
-          // "Content-Length": fileToUpload.size
+          "Authorization": "Bearer " + TabPDF.ssoToken,
+          // "Content-Type": "multipart/form-data; boundary=--WebKitFormBoundaryfgtsKTYLsT7PNUVD"
         },
-        body: formData // JSON.stringify(item)
+        body: formData
       })
       .then((response) => {
-        response.json().then(resp => {
+        response.text().then(resp => {
           console.log(resp);
         });
       });

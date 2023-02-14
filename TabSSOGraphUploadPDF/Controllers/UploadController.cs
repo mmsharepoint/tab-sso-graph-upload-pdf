@@ -25,11 +25,12 @@ namespace TabSSOGraphUploadPDF.Controllers
         }
         // api/<controller>/GetMimeMessage
         [HttpPost]
+        [DisableRequestSizeLimit] //<======= add this line
+        [RequestFormLimits(ValueLengthLimit = int.MaxValue, MultipartBodyLengthLimit = int.MaxValue)]
         public async Task<ActionResult<string>> Post([FromForm] UploadRequest fileUpload)
         {
             string accessToken = await GetAccessToken();
 
-            //IFormFile file = Request.Form.Files.FirstOrDefault();
             string fileName = fileUpload.Name;
             string siteUrl = fileUpload.SiteUrl;
             _logger.LogInformation($"Received file {fileUpload.file.FileName} with size in bytes {fileUpload.file.Length}");
@@ -39,7 +40,11 @@ namespace TabSSOGraphUploadPDF.Controllers
                                                     .ItemWithPath(fileUpload.file.FileName)
                                                     .Content.Request()
                                                     .PutAsync<DriveItem>(fileUpload.file.OpenReadStream());
-            return Ok("{'file'}");
+
+            Stream pdfFile = await GetPDF(userID, uploadResult.Id);
+            string pdfFileUrl = await UploadPDF(userID, fileUpload.file.FileName, pdfFile);
+            DeleteTempFile(userID, uploadResult.Id);
+            return Ok(pdfFileUrl);
             //return Ok(uploadResult.WebUrl);
         }
 
@@ -73,21 +78,39 @@ namespace TabSSOGraphUploadPDF.Controllers
                 return "";
             }
         }
-    }
 
-    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method)]
-    public class DisableFormValueModelBindingAttribute : Attribute, IResourceFilter
-    {
-        public void OnResourceExecuting(ResourceExecutingContext context)
+        private async Task<Stream> GetPDF(string userID, string itemID)
         {
-            var factories = context.ValueProviderFactories;
-            factories.RemoveType<FormFileValueProviderFactory>();
-            factories.RemoveType<FormValueProviderFactory>();
-            factories.RemoveType<JQueryFormValueProviderFactory>();
+            var queryOptions = new List<QueryOption>()
+            {
+                new QueryOption("format", "PDF")
+            };
+            Stream pdfResult = await this._graphClient.Users[userID]
+                                                    .Drive.Items[itemID]
+                                                    .Content
+                                                    .Request(queryOptions)
+                                                    .GetAsync();
+            return pdfResult;
         }
 
-        public void OnResourceExecuted(ResourceExecutedContext context)
+        private async Task<string> UploadPDF(string userID, string orgFileName, Stream fileStream)
         {
+            string pdfFileName = Path.GetFileNameWithoutExtension(orgFileName);
+            pdfFileName += ".pdf";
+            DriveItem uploadResult = await this._graphClient.Users[userID]
+                                                    .Drive.Root
+                                                    .ItemWithPath(pdfFileName)
+                                                    .Content.Request()
+                                                    .PutAsync<DriveItem>(fileStream);
+            return uploadResult.WebUrl;
+        }
+
+        private async Task DeleteTempFile(string userID, string itemID)
+        {
+            await this._graphClient.Users[userID]
+                        .Drive.Items[itemID]
+                        .Request()
+                        .DeleteAsync();
         }
     }
 }

@@ -1,6 +1,7 @@
 using TabSSOGraphUploadPDF;
 using TabSSOGraphUploadPDF.Interop.TeamsSDK;
 using Microsoft.Identity.Web;
+using Microsoft.AspNetCore.Http.Features;
 
 var builder = WebApplication.CreateBuilder(args);
 
