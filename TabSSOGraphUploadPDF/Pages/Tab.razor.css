@@ -102,3 +102,14 @@ code {
 	height: 100%;
 	z-index: 10;
 }
+
+.dropZoneHighlight {
+	background-color: rgba(211, 211, 211, 0.5);
+}
+
+.pdfLogo {
+	position: absolute;
+	top: 45%;
+	left: 45%;
+	font-size: xxx-large;
+}

@@ -5,10 +5,12 @@
 <div>
   <div class='dropZoneBG'>
     Drag your file here:
-    <div class="dropZone" ondragenter=""
-                              ondragleave=""
-         ondragover="TabPDF.allowDrop(event)"
-         ondrop="TabPDF.executeUpload(event)">
+    <div class="dropZone" 
+          ondragenter="TabPDF.Drag.enableHighlight(event)"
+          ondragleave="TabPDF.Drag.disableHighlight(event)"
+          ondragover="TabPDF.Drag.allowDrop(event)"
+          ondrop="TabPDF.executeUpload(event)">
+      <i class="ms-Icon ms-Icon--PDF pdfLogo" aria-hidden="true"></i>
     </div>
   </div>
 </div>

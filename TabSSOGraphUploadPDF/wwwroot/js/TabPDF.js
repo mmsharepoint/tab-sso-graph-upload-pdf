@@ -2,12 +2,6 @@
   ssoToken = "";
   siteUrl = "";
 
-  TabPDF.allowDrop = function (event) {
-    event.preventDefault();
-    event.stopPropagation();
-    event.dataTransfer.dropEffect = 'copy';
-  }
-
   TabPDF.getSSOToken = function () {
     if (microsoftTeams) {
       microsoftTeams.initialize();
@@ -39,12 +33,12 @@
   }
 
   TabPDF.executeUpload = function (event) {
-    TabPDF.allowDrop(event);
+    TabPDF.Drag.allowDrop(event);
     const dt = event.dataTransfer;
     const files = Array.prototype.slice.call(dt.files); // [...dt.files];
     files.forEach(fileToUpload => {
+      TabPDF.Drag.disableHighlight(event);
       //if (Utilities.validFileExtension(fileToUpload.name)) {
-      //alert("File " + fileToUpload.name + " Uploaded");
       const formData = new FormData();
       formData.append('file', fileToUpload);
       formData.append('Name', fileToUpload.name);
@@ -61,15 +55,38 @@
       .then((response) => {
         response.text().then(resp => {
           console.log(resp);
+          TabPDF.addConvertedFile(resp);          
         });
       });
       //}
     });
   }
 
+  TabPDF.addConvertedFile = function (fileUrl) {
+    const parentDIV = document.getElementsByClassName('dropZoneBG');
+    const fileLineDIV = document.createElement('div');
+    fileLineDIV.innerHTML = '<span>File uploaded to target and available <a href=' + fileUrl + '> here.</a ></span > ';
+    parentDIV[0].appendChild(fileLineDIV);
+  }
   /// Class 'user' for TabPDF
   TabPDF.Drag = {};
   {
+    TabPDF.Drag.allowDrop = function (event) {
+      event.preventDefault();
+      event.stopPropagation();
+      event.dataTransfer.dropEffect = 'copy';
+    }
 
+    TabPDF.Drag.enableHighlight = function (event) {
+      TabPDF.Drag.allowDrop(event);
+      const bgDIV = document.getElementsByClassName('dropZone');
+      bgDIV[0].classList.add('dropZoneHighlight');
+    }
+
+    TabPDF.Drag.disableHighlight = function (event) {
+      TabPDF.Drag.allowDrop(event);
+      const bgDIV = document.getElementsByClassName('dropZone');
+      bgDIV[0].classList.remove('dropZoneHighlight');
+    }
   }
 }(window.TabPDF = window.TabPDF || {}));

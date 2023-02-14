@@ -8,6 +8,10 @@ It uses the following capabilities (mostly) on behalf of Microsoft Graph:
 * Writing normal files smaller 4MB
 * Retrieving files with format=pdf conversion
 
+![File upload and PDF conversion](TabSSOGraphUploadPDF/assets/01UploadProcess.gif)
+
+For further details see the author's [blog post](https://mmsharepoint.wordpress.com/)
+
 ## Applies to
 
 - [Teams Toolkit with Visual Studio](https://learn.microsoft.com/en-us/microsoftteams/platform/toolkit/teams-toolkit-fundamentals?pivots=visual-studio&WT.mc_id=M365-MVP-5004617)
