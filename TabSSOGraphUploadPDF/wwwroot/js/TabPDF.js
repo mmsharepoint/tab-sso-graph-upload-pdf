@@ -1,4 +1,4 @@
-﻿(function (TabPDF, $, undefined) {
+﻿(function (TabPDF) {
   ssoToken = "";
   siteUrl = "";
 

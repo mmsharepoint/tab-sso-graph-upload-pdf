@@ -28,11 +28,7 @@ namespace TabSSOGraphUploadPDF.Controllers
         [DisableRequestSizeLimit] //<======= add this line
         [RequestFormLimits(ValueLengthLimit = int.MaxValue, MultipartBodyLengthLimit = int.MaxValue)]
         public async Task<ActionResult<string>> Post([FromForm] UploadRequest fileUpload)
-        {
-            string accessToken = await GetAccessToken();
-
-            string fileName = fileUpload.Name;
-            string siteUrl = fileUpload.SiteUrl;
+        {            
             _logger.LogInformation($"Received file {fileUpload.file.FileName} with size in bytes {fileUpload.file.Length}");
             string userID = User.GetObjectId(); //   Claims["preferred_username"];
             DriveItem uploadResult = await this._graphClient.Users[userID]
@@ -42,7 +38,7 @@ namespace TabSSOGraphUploadPDF.Controllers
                                                     .PutAsync<DriveItem>(fileUpload.file.OpenReadStream());
 
             Stream pdfFile = await GetPDF(userID, uploadResult.Id);
-            string pdfFileUrl = await UploadPDF(userID, fileUpload.file.FileName, pdfFile);
+            string pdfFileUrl = await UploadPDF(userID, fileUpload.file.FileName, pdfFile, fileUpload.SiteUrl);
             DeleteTempFile(userID, uploadResult.Id);
             return Ok(pdfFileUrl);
             //return Ok(uploadResult.WebUrl);
@@ -93,11 +89,12 @@ namespace TabSSOGraphUploadPDF.Controllers
             return pdfResult;
         }
 
-        private async Task<string> UploadPDF(string userID, string orgFileName, Stream fileStream)
+        private async Task<string> UploadPDF(string userID, string orgFileName, Stream fileStream, string siteUrl)
         {
             string pdfFileName = Path.GetFileNameWithoutExtension(orgFileName);
             pdfFileName += ".pdf";
-            DriveItem uploadResult = await this._graphClient.Users[userID]
+            string siteId = await EvaluateSiteID(siteUrl);
+            DriveItem uploadResult = await this._graphClient.Sites[siteId]
                                                     .Drive.Root
                                                     .ItemWithPath(pdfFileName)
                                                     .Content.Request()
@@ -111,6 +108,13 @@ namespace TabSSOGraphUploadPDF.Controllers
                         .Drive.Items[itemID]
                         .Request()
                         .DeleteAsync();
+        }
+
+        private async Task<string> EvaluateSiteID(string siteUrl)
+        {
+            Uri siteUri = new Uri(siteUrl);
+            Site site = await this._graphClient.Sites.GetByPath(siteUri.PathAndQuery, siteUri.Host).Request().GetAsync();
+            return site.Id;
         }
     }
 }
