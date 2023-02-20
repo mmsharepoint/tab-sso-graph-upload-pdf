@@ -10,6 +10,9 @@
           ondragleave="TabPDF.Drag.disableHighlight(event)"
           ondragover="TabPDF.Drag.allowDrop(event)"
           ondrop="TabPDF.executeUpload(event)">
+      <div style="display: none;" class="loader">
+        <FluentProgressRing />
+      </div>
       <i class="ms-Icon ms-Icon--PDF pdfLogo" aria-hidden="true"></i>
     </div>
   </div>

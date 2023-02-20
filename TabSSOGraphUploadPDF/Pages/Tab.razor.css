@@ -113,3 +113,10 @@ code {
 	left: 45%;
 	font-size: xxx-large;
 }
+
+.loader {
+	position: absolute;
+	top: 25%;
+	left: 45%;
+	text-align: center;
+}

@@ -34,6 +34,8 @@
 
   TabPDF.executeUpload = function (event) {
     TabPDF.Drag.allowDrop(event);
+    const loaderDIV = document.getElementsByClassName('loader')[0];
+    loaderDIV.style.display = 'flex';
     const dt = event.dataTransfer;
     const files = Array.prototype.slice.call(dt.files); // [...dt.files];
     files.forEach(fileToUpload => {
@@ -54,12 +56,13 @@
           },
           body: formData
         })
-          .then((response) => {
-            response.text().then(resp => {
-              console.log(resp);
-              TabPDF.addConvertedFile(resp);
-            });
+        .then((response) => {
+          response.text().then(resp => {
+            console.log(resp);
+            TabPDF.addConvertedFile(resp);
+            loaderDIV.style.display = 'none';
           });
+        });
       }
       else {
         alert('File type not supported!')
