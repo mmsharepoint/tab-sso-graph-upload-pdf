@@ -114,6 +114,12 @@ code {
 	font-size: xxx-large;
 }
 
+.suppFileTypes {
+	margin-left: 15px;
+	margin-top: 30px;
+	font-size: 0.8em;
+}
+
 .loader {
 	position: absolute;
 	top: 25%;
