@@ -10,7 +10,7 @@ It uses the following capabilities (mostly) on behalf of Microsoft Graph:
 
 ![File upload and PDF conversion](assets/01UploadProcess.gif)
 
-For further details see the author's [blog post](https://mmsharepoint.wordpress.com/)
+For further details see the author's [blog post](https://mmsharepoint.wordpress.com/2023/02/26/pdf-document-conversion-in-a-teams-tab-with-microsoft-graph-and-teams-toolkit-for-visual-studio-c/)
 
 ## Applies to
 
@@ -20,7 +20,7 @@ This sample was created [using the Teams Toolkit with Visual Studio 2022](https:
 
 Version|Date|Author|Comments
 -------|----|--------|--------
-1.0|Februar 14, 2023|[Markus Moeller](http://www.twitter.com/moeller2_0)|Initial release
+1.0|Februar 26, 2023|[Markus Moeller](http://www.twitter.com/moeller2_0)|Initial release
 
 ## Disclaimer
 
@@ -41,6 +41,7 @@ Version|Date|Author|Comments
   - With the client IDs for Teams App and Teams Web App 1fec8e78-bce4-4aaf-ab1b-5451cc387264 and 5e3ce6c0-2b1f-4285-8d4b-75ee78787346
 - Add the app registration ClientId, ClientSecret to your appsettings.json (or a appsettings.Development.json)
 - Fill OAuthAuthority with https://login.microsoftonline.com/_YOUR_TENANTID_
+- In Visual Studio press F5, resp start debug "Microsoft Teams (browser)"
 
 ## Features
 This is a simple Teams Tab. It uses the Microsoft Graph Toolkit (MGT) for simplifying access to Microsoft 365 resources.

@@ -44,37 +44,6 @@ namespace TabSSOGraphUploadPDF.Controllers
             //return Ok(uploadResult.WebUrl);
         }
 
-        private async Task<string> GetAccessToken()
-        {
-            _logger.LogInformation($"Authenticated user: {User.GetDisplayName()}");
-
-            try
-            {
-                // TEMPORARY
-                // Get a Graph token via OBO flow
-                var token = await _tokenAcquisition
-                    .GetAccessTokenForUserAsync(new[]{
-                        "Files.ReadWrite", "Sites.ReadWrite.All" });
-
-                // Log the token
-                _logger.LogInformation($"Access token for Graph: {token}");
-                return token;
-            }
-            catch (MicrosoftIdentityWebChallengeUserException ex)
-            {
-                _logger.LogError(ex, "Consent required");
-                // This exception indicates consent is required.
-                // Return a 403 with "consent_required" in the body
-                // to signal to the tab it needs to prompt for consent
-                return "";
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error occurred");
-                return "";
-            }
-        }
-
         private async Task<Stream> GetPDF(string userID, string itemID)
         {
             var queryOptions = new List<QueryOption>()
