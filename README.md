@@ -30,7 +30,8 @@ Version|Date|Author|Comments
 ## Minimal Path to Awesome
 - Clone the repository
     ```bash
-    git clone https://github.com/mmsharepoint/tab-mgt-person-csharp.git
+    git clone https://github.com/mmsharepoint/tab-sso-graph-upload-pdf-csharp.git
+- Open tab-sso-graph-upload-pdf.sln in Visual Studio
 - Perform actions in GettingStarted.txt
 - You will need to register an app in Azure AD [Can also be accomplished by Visual Studio](https://learn.microsoft.com/en-us/microsoftteams/platform/toolkit/add-single-sign-on?pivots=visual-studio&WT.mc_id=M365-MVP-5004617#add-sso-to-teams-app-for-visual-studio)
   - with redirect uri https://localhost/blank-auth-end.html
